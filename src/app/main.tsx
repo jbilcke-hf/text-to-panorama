@@ -125,11 +125,11 @@ export default function Main() {
         fonts.actionman.className
       )}>
         <div className={cn(
-          `text-center text-xl text-stone-700 w-[70%]`,
+          `text-center text-2xl text-stone-200 w-[70%]`,
           isLoading ? ``: `scale-0 opacity-0`,
           `transition-all duration-300 ease-in-out`,
         )}>
-          {isLoading ? 'Teleporting to a new metaverse location..' : ''}
+          {isLoading ? 'Generating new metaverse location..' : ''}
         </div>
       </div>
     </div>
