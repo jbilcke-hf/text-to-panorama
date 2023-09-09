@@ -10,6 +10,7 @@ const renderingEngine = `${process.env.RENDERING_ENGINE || ""}` as RenderingEngi
 
 const replicateToken = `${process.env.REPLICATE_API_TOKEN || ""}`
 const replicateModel = `${process.env.REPLICATE_API_MODEL || ""}`
+const replicateModelVersion = `${process.env.REPLICATE_API_MODEL_VERSION || ""}`
 
 // note: there is no / at the end in the variable
 // so we have to add it ourselves if needed
@@ -76,13 +77,15 @@ export async function newRender({
       if (!replicateModel) {
         throw new Error(`you need to configure your REPLICATE_API_MODEL in order to use the REPLICATE rendering engine`)
       }
-
+      if (!replicateModelVersion) {
+        throw new Error(`you need to configure your REPLICATE_API_MODEL_VERSION in order to use the REPLICATE rendering engine`)
+      }
       const replicate = new Replicate({ auth: replicateToken })
 
       // console.log("Calling replicate..")
       const seed = generateSeed()
       const prediction = await replicate.predictions.create({
-        version: "76acc4075d0633dcb3823c1fed0419de21d42001b65c816c7b5b9beff30ec8cd",
+        version: replicateModelVersion,
         input: { prompt, seed }
       })
       
@@ -99,7 +102,7 @@ export async function newRender({
         alt: prompt,
         error: prediction.error,
         maskUrl: "",
-        segments:[]
+        segments: []
       } as RenderedScene
     } else {
 
