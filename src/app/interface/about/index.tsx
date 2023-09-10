@@ -25,10 +25,10 @@ export function About() {
             Panoremix is a free and open-source application made to generate panoramas.
          </p>
          <p>
-         👉 The stable diffusion model used to generate the images is the base <a className="text-stone-600 underline" href="https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0" target="_blank">SDXL 1.0</a>.
+         👉 The stable diffusion model used to generate the images is <a className="text-stone-600 underline" href="https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0" target="_blank">SDXL 1.0</a>.
         </p>
          <p>
-         👉 The LoRA model used to generate the descriptions of each panel is <a className="text-stone-600 underline" href="https://replicate.com/lucataco/sdxl-panoramic" target="_blank">sdxl-panoramic</a>, a seamless variant of <a className="text-stone-600 underline" href="https://replicate.com/jbilcke/sdxl-panorama" target="_blank">sdxl-panorama</a>.
+         👉 The SDXL LoRA model used is <a className="text-stone-600 underline" href="https://replicate.com/lucataco/sdxl-panoramic" target="_blank">sdxl-panoramic</a>, a seamless variant of <a className="text-stone-600 underline" href="https://replicate.com/jbilcke/sdxl-panorama" target="_blank">sdxl-panorama</a>.
          </p>
         </div>
         <DialogFooter>
