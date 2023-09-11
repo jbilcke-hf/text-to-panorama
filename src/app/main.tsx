@@ -12,7 +12,7 @@ import { SphericalImage } from "./interface/spherical-image"
 import { getRender, newRender } from "./engine/render"
 import { RenderedScene } from "@/types"
 
-export default function Main() {
+export default function Generator() {
   const [_isPending, startTransition] = useTransition()
 
   const prompt = useStore(state => state.prompt)

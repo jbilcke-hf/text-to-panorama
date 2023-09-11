@@ -29,10 +29,10 @@ export async function newRender({
   }
 
  prompt = [
-   `hdri view`,
-   `highly detailed`,
-   `intricate details`,
-   prompt
+    `hdri view`,
+    `highly detailed`,
+    `intricate details`,
+    prompt
  ].join(', ')
 
   // return await Gorgon.get(cacheKey, async () => {
