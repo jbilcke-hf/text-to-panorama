@@ -1,18 +1,19 @@
 "use client"
 
-import { useEffect, useRef, useState, useTransition } from "react"
+import { useEffect, useRef, useTransition } from "react"
 
 import { cn } from "@/lib/utils"
-import { TopMenu } from "./interface/top-menu"
+import { TopMenu } from "../interface/top-menu"
 import { fonts } from "@/lib/fonts"
 
-import { useStore } from "./store"
-import { BottomBar } from "./interface/bottom-bar"
-import { SphericalImage } from "./interface/spherical-image"
-import { getRender, newRender } from "./engine/render"
+import { useStore } from "../store"
+import { BottomBar } from "../interface/bottom-bar"
+import { SphericalImage } from "../interface/spherical-image"
+import { getRender, newRender } from "../engine/render"
 import { RenderedScene } from "@/types"
+import { postToCommunity } from "../engine/community"
 
-export default function Generator() {
+export default function GeneratePage() {
   const [_isPending, startTransition] = useTransition()
 
   const prompt = useStore(state => state.prompt)
@@ -78,6 +79,14 @@ export default function Generator() {
           setLoading(false)
         } else {
           console.log("panorama finished:", newRendered)
+          try {
+            await postToCommunity({
+              prompt,
+              assetUrl: newRendered.assetUrl,
+            })
+          } catch (err) {
+            console.log("failed to post to community, but it's no big deal")
+          }
           setRendered(newRendered)
           setLoading(false)
         }
@@ -101,7 +110,7 @@ export default function Generator() {
   }, [prompt])
 
   return (
-    <div>
+    <div className="">
       <TopMenu />
       <div className={cn(
         `fixed inset-0 w-screen h-screen overflow-y-scroll`,
@@ -129,7 +138,7 @@ export default function Generator() {
           isLoading ? ``: `scale-0 opacity-0`,
           `transition-all duration-300 ease-in-out`,
         )}>
-          {isLoading ? 'Generating new metaverse location..' : ''}
+          {isLoading ? 'Generating metaverse location in the latent space..' : ''}
         </div>
       </div>
     </div>

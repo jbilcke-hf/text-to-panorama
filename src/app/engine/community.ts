@@ -2,11 +2,12 @@
 
 import { v4 as uuidv4 } from "uuid"
 
-import { CreatePostResponse, GetAppPostsResponse, Post } from "@/types"
+import { CreatePostResponse, GetAppPostsResponse, Post, PostVisibility } from "@/types"
+import { filterOutBadWords } from "./censorship"
 
 const apiUrl = `${process.env.COMMUNITY_API_URL || ""}`
 const apiToken = `${process.env.COMMUNITY_API_TOKEN || ""}`
-const appId = `${process.env.APP_ID || ""}`
+const appId = `${process.env.COMMUNITY_API_ID || ""}`
 
 export async function postToCommunity({
   prompt,
@@ -15,6 +16,9 @@ export async function postToCommunity({
   prompt: string
   assetUrl: string
 }): Promise<Post> {
+
+  prompt = filterOutBadWords(prompt)
+
   // if the community API is disabled,
   // we don't fail, we just mock
   if (!apiUrl) {
@@ -25,6 +29,7 @@ export async function postToCommunity({
       previewUrl: assetUrl,
       assetUrl,
       createdAt: new Date().toISOString(),
+      visibility: "normal",
       upvotes: 0,
       downvotes: 0
     }
@@ -41,7 +46,7 @@ export async function postToCommunity({
   }
 
   try {
-    console.log(`calling POST ${apiUrl}/post with prompt: ${prompt}`)
+    console.log(`calling POST ${apiUrl}/posts/${appId} with prompt: ${prompt}`)
 
     const postId = uuidv4()
 
@@ -49,7 +54,7 @@ export async function postToCommunity({
 
     console.table(post)
 
-    const res = await fetch(`${apiUrl}/post`, {
+    const res = await fetch(`${apiUrl}/posts/${appId}`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -82,7 +87,7 @@ export async function postToCommunity({
   }
 }
 
-export async function getLatestPosts(): Promise<Post[]> {
+export async function getLatestPosts(visibility?: PostVisibility): Promise<Post[]> {
 
   let posts: Post[] = []
 
@@ -94,7 +99,9 @@ export async function getLatestPosts(): Promise<Post[]> {
 
   try {
     // console.log(`calling GET ${apiUrl}/posts with renderId: ${renderId}`)
-    const res = await fetch(`${apiUrl}/posts/${appId}`, {
+    const res = await fetch(`${apiUrl}/posts/${appId}/${
+      visibility || "all"
+    }`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -120,8 +127,9 @@ export async function getLatestPosts(): Promise<Post[]> {
     // console.log("response:", response)
     return Array.isArray(response?.posts) ? response?.posts : []
   } catch (err) {
-    const error = `failed to get posts: ${err}`
-    console.error(error)
-    throw new Error(error)
+    // const error = `failed to get posts: ${err}`
+    // console.error(error)
+    // throw new Error(error)
+    return []
   }
 }

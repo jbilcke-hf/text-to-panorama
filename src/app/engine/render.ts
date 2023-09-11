@@ -5,6 +5,7 @@ import Replicate, { Prediction } from "replicate"
 import { RenderRequest, RenderedScene, RenderingEngine } from "@/types"
 import { generateSeed } from "@/lib/generateSeed"
 import { sleep } from "@/lib/sleep"
+import { filterOutBadWords } from "./censorship"
 
 const renderingEngine = `${process.env.RENDERING_ENGINE || ""}` as RenderingEngine
 
@@ -32,7 +33,7 @@ export async function newRender({
     `hdri view`,
     `highly detailed`,
     `intricate details`,
-    prompt
+    filterOutBadWords(prompt)
  ].join(', ')
 
   // return await Gorgon.get(cacheKey, async () => {
@@ -240,6 +241,7 @@ export async function getRender(renderId: string) {
       
       const response = (await res.json()) as RenderedScene
       // console.log("response:", response)
+
       return response
     }
   } catch (err) {

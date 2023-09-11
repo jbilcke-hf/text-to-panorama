@@ -8,7 +8,7 @@ export function About() {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button variant="outline" className="text-stone-800 dark:text-stone-200">
           <span className="hidden md:inline">About this project</span>
           <span className="inline md:hidden">About</span>
         </Button>

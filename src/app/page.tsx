@@ -2,12 +2,14 @@
 
 import Head from "next/head"
 
-import Main from "./main"
+// import Landing from "./landing"
+import Generate from "./generate/page"
+
 import { TooltipProvider } from "@/components/ui/tooltip"
 
 // https://nextjs.org/docs/pages/building-your-application/optimizing/fonts 
 
-export default async function IndexPage({ params: { ownerId } }: { params: { ownerId: string }}) {
+export default async function Page() {
   return (
     <>
       <Head>
@@ -19,7 +21,7 @@ export default async function IndexPage({ params: { ownerId } }: { params: { own
         `light bg-zinc-50 text-stone-900
         `}>
         <TooltipProvider delayDuration={100}>
-          <Main />
+          <Generate />
         </TooltipProvider>
       </main>
     </>
