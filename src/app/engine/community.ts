@@ -17,8 +17,13 @@ export async function postToCommunity({
   assetUrl: string
 }): Promise<Post> {
 
+  const before = prompt
   prompt = filterOutBadWords(prompt)
 
+  if (prompt !== before) {
+    console.log(`user attempted to use bad words! their original prompt is: ${before}`)
+  }
+  
   // if the community API is disabled,
   // we don't fail, we just mock
   if (!apiUrl) {

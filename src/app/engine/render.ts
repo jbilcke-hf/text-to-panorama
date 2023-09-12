@@ -29,13 +29,13 @@ export async function newRender({
     throw new Error(`cannot call the rendering API without a prompt, aborting..`)
   }
 
- prompt = [
+  prompt = [
     `hdri view`,
     `highly detailed`,
     `intricate details`,
     filterOutBadWords(prompt)
- ].join(', ')
-
+  ].join(', ')
+ 
   // return await Gorgon.get(cacheKey, async () => {
 
   let defaulResult: RenderedScene = {
