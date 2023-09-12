@@ -5,8 +5,6 @@ import Head from "next/head"
 // import Firehose from "./firehose/page"
 import Generate from "./generate/page"
 
-import { TooltipProvider } from "@/components/ui/tooltip"
-
 // https://nextjs.org/docs/pages/building-your-application/optimizing/fonts 
 
 export default async function Page() {
@@ -20,9 +18,7 @@ export default async function Page() {
       <main className={
         `light bg-zinc-50 text-stone-900
         `}>
-        <TooltipProvider delayDuration={100}>
-          <Generate />
-        </TooltipProvider>
+        <Generate />
       </main>
     </>
   )
