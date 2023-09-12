@@ -10,7 +10,7 @@ export const useStore = create<{
   isLoading: boolean
   setLoading: (isLoading: boolean) => void
   setRendered: (renderedScene: RenderedScene) => void
-  generate: (prompt: string) => void
+  setPrompt: (prompt: string) => void
 }>((set, get) => ({
   prompt: "",
   renderedScene: {
@@ -31,7 +31,7 @@ export const useStore = create<{
       renderedScene
     })
   },
-  generate: (prompt: string) => {
+  setPrompt: (prompt: string) => {
     set({
       prompt,
     })

@@ -2,12 +2,13 @@
 
 import { v4 as uuidv4 } from "uuid"
 
-import { CreatePostResponse, GetAppPostsResponse, Post, PostVisibility } from "@/types"
+import { CreatePostResponse, GetAppPostResponse, GetAppPostsResponse, Post, PostVisibility } from "@/types"
 import { filterOutBadWords } from "./censorship"
 
 const apiUrl = `${process.env.COMMUNITY_API_URL || ""}`
 const apiToken = `${process.env.COMMUNITY_API_TOKEN || ""}`
 const appId = `${process.env.COMMUNITY_API_ID || ""}`
+const secretModerationKey = `${process.env.MODERATION_KEY || ""}`
 
 export async function postToCommunity({
   prompt,
@@ -23,7 +24,7 @@ export async function postToCommunity({
   if (prompt !== before) {
     console.log(`user attempted to use bad words! their original prompt is: ${before}`)
   }
-  
+
   // if the community API is disabled,
   // we don't fail, we just mock
   if (!apiUrl) {
@@ -136,5 +137,109 @@ export async function getLatestPosts(visibility?: PostVisibility): Promise<Post[
     // console.error(error)
     // throw new Error(error)
     return []
+  }
+}
+
+export async function getPost(postId: string): Promise<Post> {
+
+ // if the community API is disabled we don't fail,
+  // we just mock
+  if (!apiUrl) {
+    throw new Error("community API is not enabled")
+  }
+
+  try {
+    // console.log(`calling GET ${apiUrl}/posts with renderId: ${renderId}`)
+    const res = await fetch(`${apiUrl}/posts/${appId}/${postId}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiToken}`,
+      },
+      cache: 'no-store',
+    // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
+    // next: { revalidate: 1 }
+    })
+
+    // console.log("res:", res)
+    // The return value is *not* serialized
+    // You can return Date, Map, Set, etc.
+    
+    // Recommendation: handle errors
+    if (res.status !== 200) {
+      // This will activate the closest `error.js` Error Boundary
+      throw new Error('Failed to fetch data')
+    }
+    
+    const response = (await res.json()) as GetAppPostResponse
+    // console.log("response:", response)
+    return response.post
+  } catch (err) {
+    const error = `failed to get post: ${err}`
+    console.error(error)
+    throw new Error(error)
+  }
+}
+
+export async function deletePost({
+  postId,
+  moderationKey,
+}: {
+  postId: string
+  moderationKey: string
+}): Promise<boolean> {
+
+  // if the community API is disabled,
+  // we don't fail, we just mock
+  if (!apiUrl) {
+    return false
+  }
+
+  if (!postId) {
+    console.error(`cannot delete a post without a postId, aborting..`)
+    throw new Error(`cannot delete a post without a postId, aborting..`)
+  }
+  if (!moderationKey) {
+    console.error(`cannot delete a post without a moderationKey, aborting..`)
+    throw new Error(`cannot delete a post without a moderationKey, aborting..`)
+  }
+
+  if (moderationKey !== secretModerationKey) {
+    console.error(`invalid moderation key, operation denied! please ask a Panoremix admin for the mdoeration key`)
+    throw new Error(`invalid moderation key, operation denied! please ask a Panoremix admin for the mdoeration key`)
+  }
+
+  try {
+    console.log(`calling DELETE ${apiUrl}/posts/${appId}/${postId}`)
+
+    const res = await fetch(`${apiUrl}/posts/${appId}/${postId}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiToken}`,
+      },
+      cache: 'no-store',
+    // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
+    // next: { revalidate: 1 }
+    })
+
+    // console.log("res:", res)
+    // The return value is *not* serialized
+    // You can return Date, Map, Set, etc.
+    
+    // Recommendation: handle errors
+    if (res.status !== 200) {
+      // This will activate the closest `error.js` Error Boundary
+      throw new Error('Failed to fetch data')
+    }
+    
+    const response = (await res.json()) as CreatePostResponse
+    return true
+  } catch (err) {
+    const error = `failed to delete the post: ${err}`
+    console.error(error)
+    throw new Error(error)
   }
 }

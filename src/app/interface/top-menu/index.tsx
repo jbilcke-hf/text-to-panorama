@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 export function TopMenu() {
   const prompt = useStore(state => state.prompt)
 
-  const generate = useStore(state => state.generate)
+  const setPrompt = useStore(state => state.setPrompt)
 
   const isLoading = useStore(state => state.isLoading)
   const setLoading = useStore(state => state.setLoading)
@@ -24,7 +24,7 @@ export function TopMenu() {
   const handleSubmit = () => {
     const promptChanged = draftPrompt.trim() !== prompt.trim()
     if (!isLoading && (promptChanged)) {
-      generate(draftPrompt)
+      setPrompt(draftPrompt)
     }
   }
 

@@ -116,3 +116,9 @@ export type GetAppPostsResponse = {
   error?: string
   posts: Post[]
 }
+
+export type GetAppPostResponse = {
+  success?: boolean
+  error?: string
+  post: Post
+}

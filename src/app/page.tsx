@@ -2,7 +2,7 @@
 
 import Head from "next/head"
 
-// import Landing from "./landing"
+// import Firehose from "./firehose/page"
 import Generate from "./generate/page"
 
 import { TooltipProvider } from "@/components/ui/tooltip"

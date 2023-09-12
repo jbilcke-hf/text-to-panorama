@@ -11,12 +11,16 @@ import { BottomBar } from "../interface/bottom-bar"
 import { SphericalImage } from "../interface/spherical-image"
 import { getRender, newRender } from "../engine/render"
 import { RenderedScene } from "@/types"
-import { postToCommunity } from "../engine/community"
+import { getPost, postToCommunity } from "../engine/community"
+import { useSearchParams } from "next/navigation"
 
 export default function GeneratePage() {
+  const searchParams = useSearchParams()
   const [_isPending, startTransition] = useTransition()
+  const postId = (searchParams.get("postId") as string) || ""
 
   const prompt = useStore(state => state.prompt)
+  const setPrompt = useStore(state => state.setPrompt)
   const setRendered = useStore(state => state.setRendered)
   const renderedScene = useStore(state => state.renderedScene)
   const isLoading = useStore(state => state.isLoading)
@@ -35,6 +39,10 @@ export default function GeneratePage() {
   useEffect(() => {
     if (!prompt) { return }
 
+    // to prevent loading a new prompt if we are already loading
+    // (eg. the initial one, from a community post)
+    // if (isLoading) { return }
+
     startTransition(async () => {
  
       try {
@@ -52,10 +60,16 @@ export default function GeneratePage() {
     startTransition(async () => {
       clearTimeout(timeoutRef.current)
 
+      if (renderedRef.current?.status === "completed") {
+        console.log("rendering job is already completed")
+        return
+      }
+
       if (!renderedRef.current?.renderId || renderedRef.current?.status !== "pending") {
         timeoutRef.current = setTimeout(checkStatus, delay)
         return
       }
+
       try {
         // console.log(`Checking job status API for job ${renderedRef.current?.renderId}`)
         const newRendered = await getRender(renderedRef.current.renderId)
@@ -108,6 +122,39 @@ export default function GeneratePage() {
       clearTimeout(timeoutRef.current)
     }
   }, [prompt])
+
+  useEffect(() => {
+    if (!postId) {
+      return
+    }
+    setLoading(true)
+
+    startTransition(async () => {
+      try {
+        console.log(`loading post ${postId}`)
+        const post = await getPost(postId)
+
+        // setting the prompt here will mess-up with everything
+        // normally this shouldn't trigger the normal prompt update workflow,
+        // because we are set the app to "is loading"
+        // setPrompt(post.prompt)
+
+        setRendered({
+          renderId: postId,
+          status: "completed",
+          assetUrl: post.assetUrl, 
+          alt: post.prompt,
+          error: "",
+          maskUrl: "",
+          segments: []
+        })
+        setLoading(false)
+      } catch (err) {
+        console.error("failed to get post: ", err)
+        setLoading(false)
+      }
+    })
+  }, [postId])
 
   return (
     <div className="">
