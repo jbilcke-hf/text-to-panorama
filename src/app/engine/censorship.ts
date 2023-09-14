@@ -53,6 +53,11 @@ const roasted = [
 ]
 
 const banned = [
+  "8a05d4869d9d6ce388c6cd2db13ca12b88097b90f9be027d5ffaaa467c7a6e5e",
+  "0c475212a608138244c5fc150b1563e5ef79c516234fd78dcd5993f726c359a0",
+  "df17388805f99f2ff3e5ae97a0f55e5c927eb47f17ca65822bf8c88f02bac3dd",
+  "86c3355d1bd581cdf7306729d8dd0ee9b7a317b9cfd6d7a6f5fad9c0dafe2167",
+  "23a2484cd420c9ffbfcc2c0075a9b330664450ced1fc64ab6a65e278086b8c6e",
   "fb4cabe709b62eea1b4cc0030c76f5e4a43ee677ce19124e8e7bafa86c78ab66",
   "d99c26daee85f7dc81c46c061a5874cff7179ed72d884d2316d664d36ffe7ab5",
   "b93c38af5aa221d76c60ee3eb762efee0cdb0daf29ceb235b7dda6d46c06490d",
@@ -113,6 +118,19 @@ const banned = [
   "c9b6b26cb3a694eb78fcac0a14ad18d46d50907186a9add41022d31d191b2b65"
 ]
 
+const young = [
+  "ffdf66787b4a33b78b18c18822e334cfe2c8406caf442851deef451bd43140a1",
+  "858f22219afc4b32a7ba9a27a213d7f495e77c3cceed8147eae5282bf3e23d39",
+  "8c3c46df84ace3d58d4ce0fbc513017986b33c6002ae369d9f7dd1f892a898cb",
+  "66caa22b9483fdf026ce67de61067d81535a7c9b3169cbc5c2a455ac8dcc7bec",
+  "76893047b1eff9fadc7be07b13adb5aaed9c73bcdeea46ee07098605e2c7ff76",
+  "526cb848754e2baaa17376a5693d90ba3f69f71fd2a866f22876ac8a075849a7",
+  "f59c38e31d0f64dc1bfcdf34451723bc1a65570e209e5496c8d1d7f6d3d649db",
+  "e013a67e275c62c1402ccbbb11ad14afb8b8a82318a44c07d67599ed5ac874de",
+  "3bef34219fb07f867ecbff4d6748f598d6cc0761e17dd0d431ee1f4ec3281374",
+  "8211bf5f613fac06cd5d074d34c16dfacc9367c8afaa6ad3aff99d145e5221be"
+]
+
 const getFingerprint = (word: string) => {
   return computeSecretFingerprint(
     word.toLocaleLowerCase().replaceAll(/[^a-zA-Z0-9]/gi, "")
@@ -147,6 +165,8 @@ export const filterOutBadWords = (sentence: string) => {
       result = "cat"
     } else if (roasted.includes(fingerprint)) {
       result = "roasted chicken"
+    } else if (young.includes(fingerprint)) {
+      result = "adult"
     } else if (banned.includes(fingerprint)) {
       result = "_BANNED_"
     }
