@@ -114,7 +114,9 @@ const banned = [
 ]
 
 const getFingerprint = (word: string) => {
-  return computeSecretFingerprint(word.toLocaleLowerCase())
+  return computeSecretFingerprint(
+    word.toLocaleLowerCase().replaceAll(/[^a-zA-Z0-9]/gi, "")
+    )
 }
 
 const encode = (list: string[]) => {
@@ -128,10 +130,13 @@ const encode = (list: string[]) => {
 export const filterOutBadWords = (sentence: string) => {
   if (process.env.ENABLE_CENSORSHIP !== "true") { return sentence }
 
-  const words = sentence.split(" ")
-  return words.map(word => {
-    const fingerprint = getFingerprint(word)
+  let requireCensorship = false
 
+  const words = sentence.replaceAll(/[^a-zA-Z0-9]/gi, " ").replaceAll(/\s+/gi, " ").trim().split(" ")
+  
+  const sanitized = words.map(word => {
+    const fingerprint = getFingerprint(word)
+  
     let result: string = word
     // some users want to play it smart and bypass our system so let's play too
     if (chickens.includes(fingerprint)) {
@@ -145,6 +150,15 @@ export const filterOutBadWords = (sentence: string) => {
     } else if (banned.includes(fingerprint)) {
       result = "_BANNED_"
     }
+
+    if (result !== word) {
+      requireCensorship = true
+    }
     return result
   }).filter(item => item !== "_BANNED_").join(" ")
+
+  // if the user didn't try to use a bad word, we leave it untouched 
+  // he words array has been degraded by the replace operation, but it removes commas etc which isn't great
+  // so if the request was genuine and SFW, it's best to return the original prompt
+  return requireCensorship ? sanitized : sentence
 }
