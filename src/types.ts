@@ -97,6 +97,7 @@ export type Post = {
   postId: string
   appId: string
   prompt: string
+  model: string
   previewUrl: string
   assetUrl: string
   createdAt: string

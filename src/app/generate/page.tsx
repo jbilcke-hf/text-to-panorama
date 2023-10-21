@@ -96,6 +96,7 @@ export default function GeneratePage() {
           try {
             await postToCommunity({
               prompt,
+              model: "jbilcke-hf/sdxl-panorama",
               assetUrl: newRendered.assetUrl,
             })
           } catch (err) {

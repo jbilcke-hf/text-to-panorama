@@ -11,10 +11,12 @@ const appId = `${process.env.COMMUNITY_API_ID || ""}`
 const secretModerationKey = `${process.env.MODERATION_KEY || ""}`
 
 export async function postToCommunity({
-  prompt,
-  assetUrl,
+  prompt = "",
+  model = "",
+  assetUrl = "",
 }: {
   prompt: string
+  model: string,
   assetUrl: string
 }): Promise<Post> {
 
@@ -32,6 +34,7 @@ export async function postToCommunity({
       postId: uuidv4(),
       appId: "mock",
       prompt,
+      model,
       previewUrl: assetUrl,
       assetUrl,
       createdAt: new Date().toISOString(),
@@ -78,7 +81,7 @@ export async function postToCommunity({
     // You can return Date, Map, Set, etc.
     
     // Recommendation: handle errors
-    if (res.status !== 200) {
+    if (res.status !== 201) {
       // This will activate the closest `error.js` Error Boundary
       throw new Error('Failed to fetch data')
     }
@@ -93,7 +96,13 @@ export async function postToCommunity({
   }
 }
 
-export async function getLatestPosts(visibility?: PostVisibility): Promise<Post[]> {
+export async function getLatestPosts({
+  visibility,
+  maxNbPosts = 1000
+}: {
+  visibility?: PostVisibility
+  maxNbPosts?: number
+}): Promise<Post[]> {
 
   let posts: Post[] = []
 
@@ -105,6 +114,7 @@ export async function getLatestPosts(visibility?: PostVisibility): Promise<Post[
 
   try {
     // console.log(`calling GET ${apiUrl}/posts with renderId: ${renderId}`)
+    // TODO: send the max number of posts
     const res = await fetch(`${apiUrl}/posts/${appId}/${
       visibility || "all"
     }`, {
@@ -132,7 +142,6 @@ export async function getLatestPosts(visibility?: PostVisibility): Promise<Post[
     const response = (await res.json()) as GetAppPostsResponse
     // console.log("response:", response)
 
-    const maxNbPosts = 500
     const posts: Post[] = Array.isArray(response?.posts) ? response?.posts : []
     posts.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
     return posts.slice(0, maxNbPosts)
