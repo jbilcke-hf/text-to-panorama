@@ -43,7 +43,7 @@ export default function FirehosePage() {
         )}>
         <div className="w-full flex flex-col items-center overflow-y-scroll">
           <div className="flex flex-col space-y-2 pt-18 mb-6">
-            <h1 className="text-4xl md:text-6xl lg:text-[70px] xl:text-[100px] text-cyan-700">🌐 Panoremix</h1>
+            <h1 className="text-4xl md:text-6xl lg:text-[70px] xl:text-[100px] text-cyan-700">🌐 Text-to-panorama</h1>
             <h2 className="text-3xl mb-6">Generate cool panoramas using AI!</h2>
             <h2 className="text-2xl">Latest locations synthesized:</h2>
           </div>

@@ -19,12 +19,12 @@ export default function GeneratePage() {
   const [_isPending, startTransition] = useTransition()
   const postId = (searchParams.get("postId") as string) || ""
 
-  const prompt = useStore(state => state.prompt)
-  const setPrompt = useStore(state => state.setPrompt)
-  const setRendered = useStore(state => state.setRendered)
-  const renderedScene = useStore(state => state.renderedScene)
-  const isLoading = useStore(state => state.isLoading)
-  const setLoading = useStore(state => state.setLoading)
+  const prompt = useStore(s => s.prompt)
+  const setPrompt = useStore(s => s.setPrompt)
+  const setRendered = useStore(s => s.setRendered)
+  const renderedScene = useStore(s => s.renderedScene)
+  const isLoading = useStore(s => s.isLoading)
+  const setLoading = useStore(s => s.setLoading)
 
   // keep a ref in sync
   const renderedRef = useRef<RenderedScene>()
@@ -93,6 +93,9 @@ export default function GeneratePage() {
           setLoading(false)
         } else {
           console.log("panorama finished:", newRendered)
+          /*
+          let's disable the community for now
+          
           try {
             await postToCommunity({
               prompt,
@@ -102,6 +105,7 @@ export default function GeneratePage() {
           } catch (err) {
             console.log("failed to post to community, but it's no big deal")
           }
+          */
           setRendered(newRendered)
           setLoading(false)
         }

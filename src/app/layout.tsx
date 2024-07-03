@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   // alternative title: Panomania? Teleportal? Panoportal
-  title: 'Panoremix: generate panoramas from text! Powered by Hugging Face 🤗',
+  title: 'Text-to-panorama: generate panoramas from text! Powered by Hugging Face 🤗',
   description: 'Generate panoramas from text! Powered by Hugging Face 🤗',
 }
 

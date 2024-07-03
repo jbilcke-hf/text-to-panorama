@@ -1,11 +1,11 @@
 ---
-title: Panoremix
-emoji: 👩‍🎨
-colorFrom: blue
-colorTo: yellow
+title: Text to panorama
+emoji: 👩🏞️
+colorFrom: yellow
+colorTo: green
 sdk: docker
 pinned: true
 app_port: 3000
 ---
 
-# Panoremix
+# Text to panorama

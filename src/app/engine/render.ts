@@ -1,21 +1,10 @@
 "use server"
 
-import Replicate, { Prediction } from "replicate"
 
-import { RenderRequest, RenderedScene, RenderingEngine } from "@/types"
+import { RenderRequest, RenderedScene } from "@/types"
 import { generateSeed } from "@/lib/generateSeed"
 import { sleep } from "@/lib/sleep"
 import { filterOutBadWords } from "./censorship"
-
-const renderingEngine = `${process.env.RENDERING_ENGINE || ""}` as RenderingEngine
-
-const replicateToken = `${process.env.REPLICATE_API_TOKEN || ""}`
-const replicateModel = `${process.env.REPLICATE_API_MODEL || ""}`
-const replicateModelVersion = `${process.env.REPLICATE_API_MODEL_VERSION || ""}`
-
-// note: there is no / at the end in the variable
-// so we have to add it ourselves if needed
-const apiUrl = process.env.VIDEOCHAIN_API_URL
 
 export async function newRender({
   prompt,
@@ -49,7 +38,7 @@ export async function newRender({
    }
 
   try {
-    console.log(`calling POST ${apiUrl}/render with prompt: ${prompt}`)
+    console.log(`calling Gradio space with prompt: ${prompt}`)
 
     const request = {
       prompt,

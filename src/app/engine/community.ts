@@ -219,8 +219,8 @@ export async function deletePost({
   }
 
   if (moderationKey !== secretModerationKey) {
-    console.error(`invalid moderation key, operation denied! please ask a Panoremix admin for the mdoeration key`)
-    throw new Error(`invalid moderation key, operation denied! please ask a Panoremix admin for the mdoeration key`)
+    console.error(`invalid moderation key, operation denied! please ask a Text-to-panorama admin for the mdoeration key`)
+    throw new Error(`invalid moderation key, operation denied! please ask a Text-to-panorama admin for the mdoeration key`)
   }
 
   try {

@@ -8,13 +8,13 @@ import { Input } from "@/components/ui/input"
 import { useStore } from "@/app/store"
 import { Button } from "@/components/ui/button"
 export function TopMenu() {
-  const prompt = useStore(state => state.prompt)
+  const prompt = useStore(s => s.prompt)
 
-  const setPrompt = useStore(state => state.setPrompt)
-  const setRendered = useStore(state => state.setRendered)
+  const setPrompt = useStore(s => s.setPrompt)
+  const setRendered = useStore(s => s.setRendered)
 
-  const isLoading = useStore(state => state.isLoading)
-  const setLoading = useStore(state => state.setLoading)
+  const isLoading = useStore(s => s.isLoading)
+  const setLoading = useStore(s => s.setLoading)
 
   const searchParams = useSearchParams()
 

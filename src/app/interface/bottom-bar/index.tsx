@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils"
 import { About } from "../about"
 
 export function BottomBar() {
-  // const prompt = useStore(state => state.prompt)
-  // const renderedScene = useStore(state => state.renderedScene)
-  // const setRendered = useStore(state => state.setRendered)
+  // const prompt = useStore(s => s.prompt)
+  // const renderedScene = useStore(s => s.renderedScene)
+  // const setRendered = useStore(s => s.setRendered)
 
   const isLoading = false
 

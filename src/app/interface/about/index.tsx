@@ -15,14 +15,14 @@ export function About() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>The Panoremix</DialogTitle>
+          <DialogTitle>Text-to-panorama</DialogTitle>
           <DialogDescription className="w-full text-center text-lg font-bold text-stone-800">
-            What is Panoremix?
+            What is this app?
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4 text-stone-800">
           <p className="">
-            Panoremix is a free and open-source application made to generate panoramas.
+            Text-to-panorama is a free and open-source application made to generate panoramas.
          </p>
          <p>
          👉 The stable diffusion model used to generate the images is <a className="text-stone-600 underline" href="https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0" target="_blank">SDXL 1.0</a>.
