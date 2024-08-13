@@ -2,33 +2,23 @@
 
 import { create } from "zustand"
 
-import { RenderedScene } from "@/types"
-
 export const useStore = create<{
   prompt: string
-  renderedScene: RenderedScene
+  assetUrl: string
   isLoading: boolean
   setLoading: (isLoading: boolean) => void
-  setRendered: (renderedScene: RenderedScene) => void
+  setAssetUrl: (assetUrl: string) => void
   setPrompt: (prompt: string) => void
 }>((set, get) => ({
   prompt: "",
-  renderedScene: {
-    renderId: "",
-    status: "pending",
-    assetUrl: "",
-    alt: "",
-    error: "",
-    maskUrl: "",
-    segments: []
-  },
+  assetUrl: "",
   isLoading: false,
   setLoading: (isLoading: boolean) => {
     set({ isLoading })
   },
-  setRendered: (renderedScene: RenderedScene) => {
+  setAssetUrl: (assetUrl: string) => {
     set({
-      renderedScene
+      assetUrl
     })
   },
   setPrompt: (prompt: string) => {

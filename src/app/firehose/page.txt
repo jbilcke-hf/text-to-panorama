@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useTransition } from "react"
+import { Suspense, useEffect, useState, useTransition } from "react"
 
 import { Post } from "@/types"
 import { cn } from "@/lib/utils"
@@ -13,7 +13,7 @@ import { Delete } from "./delete"
 import Link from "next/link"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-export default function FirehosePage() {
+function PageContent() {
   const searchParams = useSearchParams()
   const [_isPending, startTransition] = useTransition()
   const [posts, setPosts] = useState<Post[]>([])
@@ -35,12 +35,7 @@ export default function FirehosePage() {
   }
 
   return (
-    <TooltipProvider delayDuration={100}>
-      <div className={cn(
-        `light fixed w-full h-full flex flex-col items-center bg-slate-300 text-slate-800`,
-        ``,
-        actionman.className
-        )}>
+    <>
         <div className="w-full flex flex-col items-center overflow-y-scroll">
           <div className="flex flex-col space-y-2 pt-18 mb-6">
             <h1 className="text-4xl md:text-6xl lg:text-[70px] xl:text-[100px] text-cyan-700">🌐 Text-to-panorama</h1>
@@ -96,6 +91,20 @@ export default function FirehosePage() {
           </div>
         </div>
         <Delete post={toDelete} moderationKey={moderationKey} onDelete={handleOnDelete} />
+    </>
+  )
+}
+
+
+export default function FirehosePage() {
+  return (
+    <TooltipProvider delayDuration={100}>
+      <div className={cn(
+        `light fixed w-full h-full flex flex-col items-center bg-slate-300 text-slate-800`,
+        ``,
+        actionman.className
+        )}>
+        <Suspense><PageContent /></Suspense>
       </div>
     </TooltipProvider>
   )

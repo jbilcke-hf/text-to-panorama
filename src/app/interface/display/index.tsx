@@ -1,10 +1,9 @@
-import { RenderedScene } from "@/types"
 
-export function Display ({ rendered }: { rendered: RenderedScene }) {
+export function Display ({ assetUrl }: { assetUrl: string }) {
   return (
     <>
       <img
-        src={rendered.assetUrl || undefined}
+        src={assetUrl || undefined}
         className="fixed w-screen top-0 left-0 right-0"
       />
     </>

@@ -1,9 +1,11 @@
 "use server"
 
 import Head from "next/head"
+import { Suspense } from "react"
 
 // import Firehose from "./firehose/page"
 import Generate from "./generate/page"
+
 
 // https://nextjs.org/docs/pages/building-your-application/optimizing/fonts 
 
@@ -18,7 +20,7 @@ export default async function Page() {
       <main className={
         `light bg-zinc-50 text-stone-900
         `}>
-        <Generate />
+        <Suspense><Generate /></Suspense>
       </main>
     </>
   )

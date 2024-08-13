@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useTransition } from "react"
+import { Suspense, useEffect, useTransition } from "react"
 
 import { cn } from "@/lib/utils"
 import { TopMenu } from "../interface/top-menu"
@@ -9,31 +9,22 @@ import { fonts } from "@/lib/fonts"
 import { useStore } from "../store"
 import { BottomBar } from "../interface/bottom-bar"
 import { SphericalImage } from "../interface/spherical-image"
-import { getRender, newRender } from "../engine/render"
-import { RenderedScene } from "@/types"
-import { getPost, postToCommunity } from "../engine/community"
+import { getPanoramaSDXL } from "../engine/getPanoramaSDXL"
+import { getPost } from "../engine/community"
 import { useSearchParams } from "next/navigation"
 
-export default function GeneratePage() {
+function PageContent() {
   const searchParams = useSearchParams()
   const [_isPending, startTransition] = useTransition()
   const postId = (searchParams.get("postId") as string) || ""
 
   const prompt = useStore(s => s.prompt)
   const setPrompt = useStore(s => s.setPrompt)
-  const setRendered = useStore(s => s.setRendered)
-  const renderedScene = useStore(s => s.renderedScene)
+  const assetUrl = useStore(s => s.assetUrl)
+  const setAssetUrl = useStore(s => s.setAssetUrl)
   const isLoading = useStore(s => s.isLoading)
   const setLoading = useStore(s => s.setLoading)
 
-  // keep a ref in sync
-  const renderedRef = useRef<RenderedScene>()
-  const renderedKey = JSON.stringify(renderedScene)
-  useEffect(() => { renderedRef.current = renderedScene }, [renderedKey])
-  
-  const timeoutRef = useRef<any>(null)
-  
-  const delay = 3000
 
   // react to prompt changes
   useEffect(() => {
@@ -44,89 +35,21 @@ export default function GeneratePage() {
     // if (isLoading) { return }
 
     startTransition(async () => {
- 
       try {
-        const rendered = await newRender({ prompt, clearCache: true })
-        setRendered(rendered)
+        const assetUrl = await getPanoramaSDXL({ prompt })
+        if (assetUrl) {
+          setAssetUrl(assetUrl)
+          setLoading(false)
+        } else {
+          console.log(`panorama got an error and/or an empty asset url`)
+        }
       } catch (err) {
         console.error(err)
       } finally {
+        setLoading(false)
       }
     })
   }, [prompt]) // important: we need to react to preset changes too
-
-
-  const checkStatus = () => {
-    startTransition(async () => {
-      clearTimeout(timeoutRef.current)
-
-      if (renderedRef.current?.status === "completed") {
-        console.log("rendering job is already completed")
-        return
-      }
-
-      if (!renderedRef.current?.renderId || renderedRef.current?.status !== "pending") {
-        timeoutRef.current = setTimeout(checkStatus, delay)
-        return
-      }
-
-      try {
-        // console.log(`Checking job status API for job ${renderedRef.current?.renderId}`)
-        const newRendered = await getRender(renderedRef.current.renderId)
-        if (!newRendered) {
-          throw new Error(`getRender failed`)
-        }
-        // console.log("got a response!", newRendered)
-
-        if (JSON.stringify(renderedRef.current) !== JSON.stringify(newRendered)) {
-          // console.log("updated panel:", newRendered)
-          setRendered(renderedRef.current = newRendered)
-        }
-        // console.log("status:", newRendered.status)
-
-        if (newRendered.status === "pending") {
-          console.log("job not finished")
-          timeoutRef.current = setTimeout(checkStatus, delay)
-        } else if (newRendered.status === "error" || 
-        (newRendered.status === "completed" && !newRendered.assetUrl?.length)) {
-          console.log(`panorama got an error and/or an empty asset url :/ "${newRendered.error}", but let's try to recover..`)
-          setLoading(false)
-        } else {
-          console.log("panorama finished:", newRendered)
-          /*
-          let's disable the community for now
-          
-          try {
-            await postToCommunity({
-              prompt,
-              model: "jbilcke-hf/sdxl-panorama",
-              assetUrl: newRendered.assetUrl,
-            })
-          } catch (err) {
-            console.log("failed to post to community, but it's no big deal")
-          }
-          */
-          setRendered(newRendered)
-          setLoading(false)
-        }
-      } catch (err) {
-        console.error(err)
-        timeoutRef.current = setTimeout(checkStatus, delay)
-      }
-    })
-  }
- 
-  useEffect(() => {
-    // console.log("starting timeout")
-    clearTimeout(timeoutRef.current)
-    
-    // normally it should reply in < 1sec, but we could also use an interval
-    timeoutRef.current = setTimeout(checkStatus, delay)
-
-    return () => {
-      clearTimeout(timeoutRef.current)
-    }
-  }, [prompt])
 
   useEffect(() => {
     if (!postId) {
@@ -144,15 +67,7 @@ export default function GeneratePage() {
         // because we are set the app to "is loading"
         // setPrompt(post.prompt)
 
-        setRendered({
-          renderId: postId,
-          status: "completed",
-          assetUrl: post.assetUrl, 
-          alt: post.prompt,
-          error: "",
-          maskUrl: "",
-          segments: []
-        })
+        setAssetUrl(post.assetUrl)
         setLoading(false)
       } catch (err) {
         console.error("failed to get post: ", err)
@@ -162,19 +77,16 @@ export default function GeneratePage() {
   }, [postId])
 
   return (
-    <div className="">
-      <TopMenu />
+    <>
       <div className={cn(
         `fixed inset-0 w-screen h-screen overflow-y-scroll`,
         fonts.actionman.className
       )}>
-        {renderedScene.assetUrl ? <SphericalImage
-          rendered={renderedScene}
-          onEvent={(() => {}) as any}
+        {assetUrl ? <SphericalImage
+          assetUrl={assetUrl}
           debug={true}
         /> : null}
       </div>
-      <BottomBar />
       <div className={cn(
         `print:hidden`,
         `z-20 fixed inset-0`,
@@ -193,6 +105,17 @@ export default function GeneratePage() {
           {isLoading ? 'Generating metaverse location in the latent space..' : ''}
         </div>
       </div>
+    </>
+  )
+}
+
+
+export default function GeneratePage() {
+  return (
+    <div className="">
+      <Suspense><TopMenu /></Suspense>
+      <Suspense><PageContent /></Suspense>
+      <BottomBar />
     </div>
   )
 }

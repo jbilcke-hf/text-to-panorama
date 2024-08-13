@@ -11,7 +11,7 @@ export function TopMenu() {
   const prompt = useStore(s => s.prompt)
 
   const setPrompt = useStore(s => s.setPrompt)
-  const setRendered = useStore(s => s.setRendered)
+  const setAssetUrl = useStore(s => s.setAssetUrl)
 
   const isLoading = useStore(s => s.isLoading)
   const setLoading = useStore(s => s.setLoading)
@@ -26,15 +26,7 @@ export function TopMenu() {
     const promptChanged = draftPrompt.trim() !== prompt.trim()
     if (!isLoading && (promptChanged)) {
       // important: we reset!
-      setRendered({
-        renderId: "",
-        status: "pending",
-        assetUrl: "",
-        alt: "",
-        error: "",
-        maskUrl: "",
-        segments: []
-      })
+      setAssetUrl("")
       setPrompt(draftPrompt)
     }
   }
