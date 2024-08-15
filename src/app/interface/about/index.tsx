@@ -25,11 +25,11 @@ export function About() {
             Text-to-panorama is a free and open-source application made to generate panoramas.
          </p>
          <p>
-         👉 The stable diffusion model used to generate the images is <a className="text-stone-600 underline" href="https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0" target="_blank">SDXL 1.0</a>.
-        </p>
-         <p>
-         👉 The SDXL LoRA model used is <a className="text-stone-600 underline" href="https://replicate.com/lucataco/sdxl-panoramic" target="_blank">sdxl-panoramic</a>, a seamless variant of <a className="text-stone-600 underline" href="https://replicate.com/jbilcke/sdxl-panorama" target="_blank">sdxl-panorama</a>.
+         👉 The model used is <a className="text-stone-600 underline" href="https://huggingface.co/jbilcke-hf/flux-dev-panorama-lora-2" target="_blank">Flux.1-[dev] Panorama LoRA (v2)</a>.
          </p>
+         <p>
+         👉 Text-to-panorama is for non-commercial use only (see the model for licensing details).
+        </p>
         </div>
         <DialogFooter>
           <Button type="submit" onClick={() => setOpen(false)}>Got it</Button>
