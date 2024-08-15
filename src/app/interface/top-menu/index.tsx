@@ -48,7 +48,7 @@ export function TopMenu() {
         )}>
           <div className="flex flex-row flex-grow w-full">
         <Input
-          placeholder={`Invent a location e.g. Jurassic Park entrance, Spaceport in Mos Eisley..`}
+          placeholder={`Invent a location e.g. a japanese onsen, NYC subway station..`}
           className="w-full bg-neutral-300 text-neutral-800 dark:bg-neutral-300 dark:text-neutral-800 rounded-r-none"
           // disabled={atLeastOnePanelIsBusy}
           onChange={(e) => {
