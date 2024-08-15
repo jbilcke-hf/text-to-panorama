@@ -15,7 +15,8 @@ export function BottomBar() {
       `print:hidden`,
       `fixed bottom-0 md:bottom-0 left-2 right-0 md:left-3 md:right-1`,
       `flex flex-row`,
-      `justify-between`
+      `justify-between`,
+      `pointer-events-none`
     )}>
       <div className={cn(
         `flex flex-row`,
@@ -49,7 +50,7 @@ export function BottomBar() {
           </Button>
         </div>
       */}
-        <About />
+        <div className="pointer-events-auto"><About /></div>
       </div>
     </div>
   )
