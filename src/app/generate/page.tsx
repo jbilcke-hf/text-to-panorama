@@ -9,9 +9,10 @@ import { fonts } from "@/lib/fonts"
 import { useStore } from "../store"
 import { BottomBar } from "../interface/bottom-bar"
 import { SphericalImage } from "../interface/spherical-image"
-import { getPanoramaSDXL } from "../engine/getPanoramaSDXL"
+import { getPanoramaFlux } from "../engine/getPanoramaFlux"
 import { getPost } from "../engine/community"
 import { useSearchParams } from "next/navigation"
+import { fuseEdges } from "@/lib/fuseEdges"
 
 function PageContent() {
   const searchParams = useSearchParams()
@@ -36,7 +37,21 @@ function PageContent() {
 
     startTransition(async () => {
       try {
-        const assetUrl = await getPanoramaSDXL({ prompt })
+
+        //width: 2048,
+         //height: 1024,
+        const width = 1600
+        const height = 640
+  
+        const rawAssetUrl = await getPanoramaFlux({ prompt, width, height })
+
+        const assetUrl = await fuseEdges({
+          base64DataUriInput: rawAssetUrl,
+          inputWidth: width,
+          inputHeight: height,
+          outputWidth: width - 32
+        })
+
         if (assetUrl) {
           setAssetUrl(assetUrl)
           setLoading(false)

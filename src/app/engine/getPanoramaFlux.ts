@@ -6,8 +6,12 @@ import { filterOutBadWords } from "./censorship"
 
 export async function getPanoramaFlux({
   prompt,
+  width,
+  height,
 }: {
   prompt: string
+  width: number
+  height: number
 }): Promise<string> {
   if (!prompt) {
     console.error(`cannot call the rendering API without a prompt, aborting..`)
@@ -15,10 +19,10 @@ export async function getPanoramaFlux({
   }
 
   prompt = [
-    `hdri view`,
+    `HDRI panoramic view of TOK`,
+    filterOutBadWords(prompt),
     `highly detailed`,
     `intricate details`,
-    filterOutBadWords(prompt)
   ].join(', ')
 
 
@@ -29,12 +33,11 @@ export async function getPanoramaFlux({
   )
     
   const blob: Blob = await hf.textToImage({
-    model: "<put a 360° flux model here>",
+    model: "jbilcke-hf/flux-dev-panorama-lora-2",
     inputs: prompt,
     parameters: {
-      height: 1024,
-      width: 2048,
-  
+      width,
+      height,
       // this triggers the following exception:
       // Error: __call__() got an unexpected keyword argument 'negative_prompt'
       // negative_prompt: request.prompts.image.negative || '',
