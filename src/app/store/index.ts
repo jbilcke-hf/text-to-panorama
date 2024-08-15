@@ -10,7 +10,7 @@ export const useStore = create<{
   setAssetUrl: (assetUrl: string) => void
   setPrompt: (prompt: string) => void
 }>((set, get) => ({
-  prompt: "",
+  prompt: "an outdoor japanese onsen in snowy mountains during the morning",
   assetUrl: "",
   isLoading: false,
   setLoading: (isLoading: boolean) => {
